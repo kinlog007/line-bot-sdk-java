@@ -36,7 +36,11 @@ public class EchoApplication {
     @EventMapping
     public TextMessage handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
         System.out.println("event: " + event);
-        return new TextMessage(event.getMessage().getText()+"~姆咪姆咪~");
+        String msg = event.getMessage().getText();
+        if(msg.indexOf("吃什麼")>=0){
+        	msg = "吃大便💩💩💩💩💩💩💩💩💩";
+        }
+        return new TextMessage(msg+"~姆咪姆咪~");
     }
 
     @EventMapping
