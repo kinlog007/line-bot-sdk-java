@@ -16,6 +16,7 @@
 
 package com.example.bot.spring.echo;
 
+import java.util.HashMap;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -29,13 +30,16 @@ import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 @SpringBootApplication
 @LineMessageHandler
 public class EchoApplication {
+	private static HashMap map;
     public static void main(String[] args) {
         SpringApplication.run(EchoApplication.class, args);
+        map = new HashMap();
+        System.out.println("加入HashMap");
     }
 
     @EventMapping
     public TextMessage handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
-        System.out.println("event: " + event);
+    	System.out.println("event: " + event);
         String msg = event.getMessage().getText();
         if(msg.indexOf("吃什麼")>=0){
         	msg = "吃大便💩💩💩💩💩💩💩💩💩";
