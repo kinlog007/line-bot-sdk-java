@@ -17,6 +17,7 @@
 package com.example.bot.spring.echo;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -33,14 +34,16 @@ import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 @SpringBootApplication
 @LineMessageHandler
 public class EchoApplication {
-	private static HashMap eatMap;//<String,List<String>>
-	private static HashMap foodMap;//<String,List<String>>
-	private static HashMap addFood;//<String, String>
+	//private static HashMap eatMap;//<String,List<String>>
+	//private static HashMap foodMap;//<String,List<String>>
+	//private static HashMap addFood;//<String, String>
+	private static HashMap userMap;
     public static void main(String[] args) {
         SpringApplication.run(EchoApplication.class, args);
-        eatMap = new HashMap();//<String, List<String>>
-        foodMap = new HashMap();//<String, List<String>>
-        addFood = new HashMap();
+        //eatMap = new HashMap();//<String, List<String>>
+        //foodMap = new HashMap();//<String, List<String>>
+        //addFood = new HashMap();
+        userMap = new HashMap();
         System.out.println("加入HashMap");
     }
 
@@ -48,36 +51,55 @@ public class EchoApplication {
     public TextMessage handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
     	System.out.println("event: " + event);
     	String usrid = event.getSource().getSenderId();
-		List eatList = (List)eatMap.get(usrid);
-		List foodList = (List)foodMap.get(usrid);
-    	String needAddFood = "N";
-    	if(addFood.get(usrid)==null){
-    		addFood.put(usrid, needAddFood);
-    	}else{
-    		needAddFood = (String) addFood.get(usrid);
+    	String msg = event.getMessage().getText();
+    	/**取得吃什麼資訊並初始化**/
+    	HashMap myMap = (HashMap)userMap.get(usrid);
+    	if(myMap==null){
+    		myMap = new HashMap();
+    		myMap.put("eatMap", null);
+    		myMap.put("foodMap", null);
+    		myMap.put("addFood", "N");
+    		myMap.put("delFood", "N");
+    		myMap.put("afterAdd", "N");
+    		userMap.put(usrid, myMap);
     	}
-    	if(eatList==null)eatMap.put(usrid, new ArrayList());
-    	if(foodList==null)foodMap.put(usrid, new ArrayList());
+    	
+		List eatList = (List)myMap.get("eatMap");
+		List foodList = (List)myMap.get("foodMap");
+    	String needAddFood = (String)myMap.get("addFood");
+    	String needDelFood = (String)myMap.get("delFood");
+    	String needAfterAdd = (String)myMap.get("afterAdd");
     	System.out.println("needAddFood="+needAddFood);
-        String msg = event.getMessage().getText();
-        if(msg.indexOf("吃什麼")>=0){
+    	System.out.println("needDelFood="+needDelFood);
+    	
+    	
+    	if(eatList==null)myMap.put("eatMap", new ArrayList());
+    	if(foodList==null)myMap.put("foodMap", new ArrayList());
+    	
+    	
+        /**/
+        if(msg.indexOf("吃什麼")>=0||("Y".equals(needAfterAdd)&&"N".equals(needAddFood))){
         	//msg = "吃大便💩💩💩💩💩💩💩💩💩";
-        	foodList =  (List)foodMap.get(usrid);
         	System.out.println("foodList="+foodList);
         	if(foodList.size()<=0){
-        		msg = "你附近有什麼可以吃(請用\",\"分隔)";
-        		addFood.put(usrid, "Y");
+        		msg = "你附近有什麼可以吃(請用\"、\"分隔)";
+        		myMap.put("addFood", "Y");
+        		myMap.put("afterAdd","Y");
         	}else{
-        		
+        		Collections.shuffle(foodList);
+        		msg = "那就吃個"+(String)foodList.get(0);
         	}
         }
+        /**加入想吃的清單**/
         if("Y".equals(needAddFood)){
-        	String[] foods = msg.split(",");
+        	String[] foods = msg.split("、");
         	for(String x : foods){
         		foodList.add(x);
         	}
-        	foodMap.put(usrid, foodList);
+        	myMap.put("foodMap",foodList);
+        	myMap.put("addFood", "N");
         }
+        
         return new TextMessage(msg+"~姆咪姆咪~");
     }
 
