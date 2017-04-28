@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -71,7 +72,7 @@ public class EchoApplication {
     	String needAfterAdd = (String)myMap.get("afterAdd");
     	System.out.println("needAddFood="+needAddFood);
     	System.out.println("needDelFood="+needDelFood);
-    	
+    	System.out.println("needAfterAdd="+needAfterAdd);
     	
     	if(eatList==null)myMap.put("eatMap", new ArrayList());
     	if(foodList==null)myMap.put("foodMap", new ArrayList());
@@ -86,8 +87,11 @@ public class EchoApplication {
         		myMap.put("addFood", "Y");
         		myMap.put("afterAdd","Y");
         	}else{
-        		Collections.shuffle(foodList);
-        		msg = "那就吃個"+(String)foodList.get(0);
+        		//Collections.shuffle(foodList);
+        		Random ran = new Random();
+        		int foodsize = foodList.size();
+        		int rx = ran.nextInt(foodsize);
+        		msg = "那就吃個"+(String)foodList.get(rx);
         	}
         }
         /**加入想吃的清單**/
@@ -99,7 +103,7 @@ public class EchoApplication {
         	myMap.put("foodMap",foodList);
         	myMap.put("addFood", "N");
         }
-        
+        userMap.put(usrid, myMap);
         return new TextMessage(msg+"~姆咪姆咪~");
     }
 
