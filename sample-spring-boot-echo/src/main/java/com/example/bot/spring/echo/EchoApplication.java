@@ -78,8 +78,8 @@ public class EchoApplication {
     	if(foodList==null)myMap.put("foodMap", new ArrayList());
     	
     	
-        /**吃什麼???**/
-        if(msg.indexOf("吃什麼")>=0){
+        /**/
+        if(msg.indexOf("吃什麼")>=0||("Y".equals(needAfterAdd)&&"N".equals(needAddFood))){
         	//msg = "吃大便💩💩💩💩💩💩💩💩💩";
         	System.out.println("foodList="+foodList);
         	if(foodList.size()<=0){
@@ -87,61 +87,27 @@ public class EchoApplication {
         		myMap.put("addFood", "Y");
         		myMap.put("afterAdd","Y");
         	}else{
-        		msg = randomFoodStr(foodList);
+        		//Collections.shuffle(foodList);
+        		Random ran = new Random();
+        		int foodsize = foodList.size();
+        		int rx = ran.nextInt(foodsize);
+        		msg = "那就吃個"+(String)foodList.get(rx);
         	}
         }
-        if(msg.indexOf("#add")>=0){
-        	msg = "請輸入想吃的食物清單(請用\"、\"分隔)";
-        	myMap.put("addFood", "Y");
-        }
-        if(msg.indexOf("#del")>=0){
-        	msg = "請輸入不想吃的食物清單(請用\"、\"分隔)";
-        	myMap.put("delFood", "Y");
-        }
         /**加入想吃的清單**/
-        if("Y".equals(needAddFood)&&"N".equals(needDelFood)){
+        if("Y".equals(needAddFood)){
         	String[] foods = msg.split("、");
         	for(String x : foods){
         		foodList.add(x);
         	}
         	myMap.put("foodMap",foodList);
         	myMap.put("addFood", "N");
-        	msg = randomFoodStr(foodList);
         }
-        /**移除不想吃的清單**/
-        if("N".equals(needAddFood)&&"Y".equals(needDelFood)){
-        	String[] notFoods = msg.split("、");
-        	for(String nfds : notFoods){
-        		for(int i=0;i<foodList.size();i++){
-        			if(nfds.equals(foodList.get(i))){
-        				foodList.remove(i);
-        			}
-        		}
-        	}
-        	String rfds = "";
-        	for(int i=0;i<foodList.size();i++){
-        		String fd = ((String)foodList.get(i));
-        		if(i==(foodList.size()-1))rfds+=fd;
-        		else rfds+=fd+"、";
-        	}
-        	myMap.put("foodMap",foodList);
-        	myMap.put("delFood", "N");
-        	msg = "你從清單移除了:"+msg+" /n/r 還剩下:"+rfds+"/n/r 拉拉拉";
-        	
-        }
-        
         System.out.println("end_myMap="+myMap);
         userMap.put(usrid, myMap);
         return new TextMessage(msg+"~姆咪姆咪~");
     }
-    private String randomFoodStr(List fds){
-    	String msg = "";
-    	Random ran = new Random();
-		int foodsize = fds.size();
-		int rx = ran.nextInt(foodsize);
-		msg = "那就吃個"+(String)fds.get(rx);
-		return msg;
-    }
+
     @EventMapping
     public void handleDefaultMessageEvent(Event event) {
         System.out.println("event: " + event);
