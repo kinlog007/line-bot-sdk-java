@@ -37,13 +37,13 @@ public class EchoApplication {
 	//private static HashMap eatMap;//<String,List<String>>
 	//private static HashMap foodMap;//<String,List<String>>
 	//private static HashMap addFood;//<String, String>
-	private static HashMap userMap;
+	private static HashMap<String,Object> userMap;
     public static void main(String[] args) {
         SpringApplication.run(EchoApplication.class, args);
         //eatMap = new HashMap();//<String, List<String>>
         //foodMap = new HashMap();//<String, List<String>>
         //addFood = new HashMap();
-        userMap = new HashMap();
+        userMap = new HashMap<String,Object>();
         System.out.println("加入HashMap");
     }
 
@@ -53,9 +53,9 @@ public class EchoApplication {
     	String usrid = event.getSource().getSenderId();
     	String msg = event.getMessage().getText();
     	/**取得吃什麼資訊並初始化**/
-    	HashMap myMap = (HashMap)userMap.get(usrid);
+    	HashMap<String,Object> myMap = (HashMap<String,Object>)userMap.get(usrid);
     	if(myMap==null){
-    		myMap = new HashMap();
+    		myMap = new HashMap<String,Object>();
     		myMap.put("eatMap", null);
     		myMap.put("foodMap", null);
     		myMap.put("addFood", "N");
@@ -64,8 +64,8 @@ public class EchoApplication {
     		userMap.put(usrid, myMap);
     	}
     	System.out.println("start_myMap="+myMap);
-		List eatList = (List)myMap.get("eatMap");
-		List foodList = (List)myMap.get("foodMap");
+		List<String> eatList = (List<String>)myMap.get("eatMap");
+		List<String> foodList = (List<String>)myMap.get("foodMap");
     	String needAddFood = (String)myMap.get("addFood");
     	String needDelFood = (String)myMap.get("delFood");
     	String needAfterAdd = (String)myMap.get("afterAdd");
@@ -73,8 +73,8 @@ public class EchoApplication {
     	System.out.println("needDelFood="+needDelFood);
     	System.out.println("needAfterAdd="+needAfterAdd);
     	
-    	if(eatList==null)myMap.put("eatMap", new ArrayList());
-    	if(foodList==null)myMap.put("foodMap", new ArrayList());
+    	if(eatList==null)myMap.put("eatMap", new ArrayList<String>());
+    	if(foodList==null)myMap.put("foodMap", new ArrayList<String>());
     	
     	
         /**吃什麼???**/
