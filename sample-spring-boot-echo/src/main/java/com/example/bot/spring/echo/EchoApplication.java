@@ -64,7 +64,7 @@ public class EchoApplication {
     		myMap.put("afterAdd", "N");
     		userMap.put(usrid, myMap);
     	}
-    	
+    	System.out.println("start_myMap="+myMap);
 		List eatList = (List)myMap.get("eatMap");
 		List foodList = (List)myMap.get("foodMap");
     	String needAddFood = (String)myMap.get("addFood");
@@ -103,6 +103,7 @@ public class EchoApplication {
         	myMap.put("foodMap",foodList);
         	myMap.put("addFood", "N");
         }
+        System.out.println("end_myMap="+myMap);
         userMap.put(usrid, myMap);
         return new TextMessage(msg+"~姆咪姆咪~");
     }
