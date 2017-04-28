@@ -16,7 +16,10 @@
 
 package com.example.bot.spring.echo;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -30,19 +33,49 @@ import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 @SpringBootApplication
 @LineMessageHandler
 public class EchoApplication {
-	private static HashMap map;
+	private static HashMap<String,List<String>> eatMap;
+	private static HashMap<String,List<String>> foodMap;
+	private static HashMap<String, String> addFood;
     public static void main(String[] args) {
         SpringApplication.run(EchoApplication.class, args);
-        map = new HashMap();
+        eatMap = new HashMap<String, List<String>>();
+        foodMap = new HashMap<String, List<String>>();
         System.out.println("加入HashMap");
     }
 
     @EventMapping
     public TextMessage handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
     	System.out.println("event: " + event);
+    	String usrid = event.getSource().getSenderId();
+    	List<String> eatList = (ArrayList<String>)eatMap.get(usrid);
+    	List<String> foodList = (ArrayList<String>)foodMap.get(usrid);
+    	String needAddFood = "N";
+    	if(addFood.get(usrid)==null){
+    		addFood.put(usrid, needAddFood);
+    	}else{
+    		needAddFood = addFood.get(usrid);
+    	}
+    	if(eatList==null)eatMap.put(usrid, new ArrayList<String>());
+    	if(foodList==null)foodMap.put(usrid, new ArrayList<String>());
+    	System.out.println("needAddFood="+needAddFood);
         String msg = event.getMessage().getText();
         if(msg.indexOf("吃什麼")>=0){
-        	msg = "吃大便💩💩💩💩💩💩💩💩💩";
+        	//msg = "吃大便💩💩💩💩💩💩💩💩💩";
+        	foodList =  (List<String>)foodMap.get(usrid);
+        	System.out.println("foodList="+foodList);
+        	if(foodList.size()<=0){
+        		msg = "你附近有什麼可以吃(請用\",\"分隔)";
+        		addFood.put(usrid, "Y");
+        	}else{
+        		
+        	}
+        }
+        if("Y".equals(needAddFood)){
+        	String[] foods = msg.split(",");
+        	for(String x : foods){
+        		foodList.add(x);
+        	}
+        	foodMap.put(usrid, foodList);
         }
         return new TextMessage(msg+"~姆咪姆咪~");
     }
