@@ -33,13 +33,14 @@ import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 @SpringBootApplication
 @LineMessageHandler
 public class EchoApplication {
-	private static HashMap<String,List<String>> eatMap;
-	private static HashMap<String,List<String>> foodMap;
-	private static HashMap<String, String> addFood;
+	private static HashMap eatMap;//<String,List<String>>
+	private static HashMap foodMap;//<String,List<String>>
+	private static HashMap addFood;//<String, String>
     public static void main(String[] args) {
         SpringApplication.run(EchoApplication.class, args);
-        eatMap = new HashMap<String, List<String>>();
-        foodMap = new HashMap<String, List<String>>();
+        eatMap = new HashMap();//<String, List<String>>
+        foodMap = new HashMap();//<String, List<String>>
+        addFood = new HashMap();
         System.out.println("加入HashMap");
     }
 
@@ -47,21 +48,21 @@ public class EchoApplication {
     public TextMessage handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
     	System.out.println("event: " + event);
     	String usrid = event.getSource().getSenderId();
-    	List<String> eatList = (ArrayList<String>)eatMap.get(usrid);
-    	List<String> foodList = (ArrayList<String>)foodMap.get(usrid);
+		List eatList = (List)eatMap.get(usrid);
+		List foodList = (List)foodMap.get(usrid);
     	String needAddFood = "N";
     	if(addFood.get(usrid)==null){
     		addFood.put(usrid, needAddFood);
     	}else{
-    		needAddFood = addFood.get(usrid);
+    		needAddFood = (String) addFood.get(usrid);
     	}
-    	if(eatList==null)eatMap.put(usrid, new ArrayList<String>());
-    	if(foodList==null)foodMap.put(usrid, new ArrayList<String>());
+    	if(eatList==null)eatMap.put(usrid, new ArrayList());
+    	if(foodList==null)foodMap.put(usrid, new ArrayList());
     	System.out.println("needAddFood="+needAddFood);
         String msg = event.getMessage().getText();
         if(msg.indexOf("吃什麼")>=0){
         	//msg = "吃大便💩💩💩💩💩💩💩💩💩";
-        	foodList =  (List<String>)foodMap.get(usrid);
+        	foodList =  (List)foodMap.get(usrid);
         	System.out.println("foodList="+foodList);
         	if(foodList.size()<=0){
         		msg = "你附近有什麼可以吃(請用\",\"分隔)";
