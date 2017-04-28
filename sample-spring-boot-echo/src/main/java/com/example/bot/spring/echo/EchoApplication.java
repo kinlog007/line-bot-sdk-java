@@ -122,7 +122,7 @@ public class EchoApplication {
         	}
         	String rfds = "";
         	for(int i=0;i<foodList.size();i++){
-        		String fd = ((String)foodList.get(i));
+        		String fd = foodList.get(i);
         		if(i==(foodList.size()-1))rfds+=fd;
         		else rfds+=fd+"、";
         	}
@@ -141,7 +141,7 @@ public class EchoApplication {
     	Random ran = new Random();
 		int foodsize = fds.size();
 		int rx = ran.nextInt(foodsize);
-		msg = "那就吃個"+(String)fds.get(rx);
+		msg = "那就吃個"+fds.get(rx);
 		return msg;
     }
     @EventMapping
