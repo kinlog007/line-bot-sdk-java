@@ -53,7 +53,8 @@ public class EchoApplication {
     	String usrid = event.getSource().getSenderId();
     	String msg = event.getMessage().getText();
     	/**取得吃什麼資訊並初始化**/
-    	HashMap<String,Object> myMap = (HashMap<String,Object>)userMap.get(usrid);
+    	@SuppressWarnings("unchecked")
+		HashMap<String,Object> myMap = (HashMap<String,Object>)userMap.get(usrid);
     	if(myMap==null){
     		myMap = new HashMap<String,Object>();
     		myMap.put("eatMap", null);
@@ -64,7 +65,9 @@ public class EchoApplication {
     		userMap.put(usrid, myMap);
     	}
     	System.out.println("start_myMap="+myMap);
+		@SuppressWarnings("unchecked")
 		List<String> eatList = (List<String>)myMap.get("eatMap");
+		@SuppressWarnings("unchecked")
 		List<String> foodList = (List<String>)myMap.get("foodMap");
     	String needAddFood = (String)myMap.get("addFood");
     	String needDelFood = (String)myMap.get("delFood");
@@ -133,7 +136,7 @@ public class EchoApplication {
         userMap.put(usrid, myMap);
         return new TextMessage(msg+"~姆咪姆咪~");
     }
-    private String randomFoodStr(List fds){
+    private String randomFoodStr(List<String> fds){
     	String msg = "";
     	Random ran = new Random();
 		int foodsize = fds.size();
