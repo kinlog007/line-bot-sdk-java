@@ -57,7 +57,7 @@ public class EchoApplication {
     }
 
     @EventMapping
-    public TemplateMessage handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
+    public Object handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
     	System.out.println("event: " + event);
     	String msg = event.getMessage().getText();
     	List<Action> ac = new ArrayList<Action>();
