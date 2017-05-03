@@ -66,8 +66,9 @@ public class EchoApplication {
         	Action a2 = new MessageAction("no", "no~");
         	ac.add(a1);
         	ac.add(a2);
+        	
         	//TemplateMessage nb = new TemplateMessage(msg, new ConfirmTemplate("你好?", ac));
-        	TemplateMessage nb = new TemplateMessage(msg, new ButtonsTemplate("https://botforlin.herokuapp.com/callback/images/a.jpg", "你好阿~ 歡迎使用阿朋BOT", "需要功能請點選下列按鈕", ac));
+        	TemplateMessage nb = new TemplateMessage(msg, new ButtonsTemplate("https://upload.wikimedia.org/wikipedia/commons/f/fd/%E5%BC%A5%E5%BD%A6%E5%B1%B1%EF%BC%88%E6%96%B0%E6%BD%9F%E7%9C%8C%EF%BC%89.JPG", "你好阿~ 歡迎使用阿朋BOT", "需要功能請點選下列按鈕", ac));
         	return nb;
     	}
     	
