@@ -57,7 +57,7 @@ public class EchoApplication {
     }
 
     @EventMapping
-    public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
+    public TemplateMessage handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
     	System.out.println("event: " + event);
     	String msg = event.getMessage().getText();
     	List<Action> ac = new ArrayList<Action>();
@@ -67,15 +67,7 @@ public class EchoApplication {
     	ac.add(a2);
     	TemplateMessage nb = new TemplateMessage(msg, new ConfirmTemplate("你好?", ac));
     	
-    	try {
-			final BotApiResponse apiResponse = lineMessagingService
-			        .replyMessage(new ReplyMessage(event.getReplyToken(),
-			                                       singletonList(nb)))
-			        .execute().body();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+    	return nb;
     }
     
     
