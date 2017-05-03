@@ -60,14 +60,18 @@ public class EchoApplication {
     public Object handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
     	System.out.println("event: " + event);
     	String msg = event.getMessage().getText();
-    	List<Action> ac = new ArrayList<Action>();
-    	Action a1 = new MessageAction("yes", "yes~");
-    	Action a2 = new MessageAction("no", "no~");
-    	ac.add(a1);
-    	ac.add(a2);
-    	TemplateMessage nb = new TemplateMessage(msg, new ConfirmTemplate("你好?", ac));
+    	if(msg.indexOf("#help")>=0){
+    		List<Action> ac = new ArrayList<Action>();
+        	Action a1 = new MessageAction("yes", "yes~");
+        	Action a2 = new MessageAction("no", "no~");
+        	ac.add(a1);
+        	ac.add(a2);
+        	TemplateMessage nb = new TemplateMessage(msg, new ConfirmTemplate("你好?", ac));
+        	return nb;
+    	}
     	
-    	return nb;
+    	TextMessage tm = new TextMessage(msg+"!@#$%");
+    	return tm;
     }
     
     
