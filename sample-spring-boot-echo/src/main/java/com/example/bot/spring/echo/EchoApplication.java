@@ -66,7 +66,8 @@ public class EchoApplication {
         	Action a2 = new MessageAction("no", "no~");
         	ac.add(a1);
         	ac.add(a2);
-        	TemplateMessage nb = new TemplateMessage(msg, new ConfirmTemplate("你好?", ac));
+        	//TemplateMessage nb = new TemplateMessage(msg, new ConfirmTemplate("你好?", ac));
+        	TemplateMessage nb = new TemplateMessage(msg, new ButtonsTemplate("", "你好阿~ 歡迎使用阿朋BOT", "需要功能請點選下列按鈕", ac));
         	return nb;
     	}
     	
