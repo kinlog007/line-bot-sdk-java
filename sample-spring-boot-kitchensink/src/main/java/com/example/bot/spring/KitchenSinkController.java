@@ -29,6 +29,9 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -86,18 +89,31 @@ import lombok.extern.slf4j.Slf4j;
 public class KitchenSinkController {
     @Autowired
     private LineMessagingClient lineMessagingClient;
-
+    
+    /**
+     * 輸入文字時觸發程式
+     * @param event
+     * @throws Exception
+     */
     @EventMapping
     public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws Exception {
         TextMessageContent message = event.getMessage();
         handleTextContent(event.getReplyToken(), event, message);
     }
-
+    
+    /**
+     * 輸入貼圖時觸發程式
+     * @param event
+     */
     @EventMapping
     public void handleStickerMessageEvent(MessageEvent<StickerMessageContent> event) {
         handleSticker(event.getReplyToken(), event.getMessage());
     }
-
+    
+    /**
+     * 輸入GPS定位時觸發程式
+     * @param event
+     */
     @EventMapping
     public void handleLocationMessageEvent(MessageEvent<LocationMessageContent> event) {
         LocationMessageContent locationMessage = event.getMessage();
@@ -108,7 +124,12 @@ public class KitchenSinkController {
                 locationMessage.getLongitude()
         ));
     }
-
+    
+    /**
+     * 輸入圖檔時觸發程式
+     * @param event
+     * @throws IOException
+     */
     @EventMapping
     public void handleImageMessageEvent(MessageEvent<ImageMessageContent> event) throws IOException {
         // You need to install ImageMagick
@@ -127,7 +148,12 @@ public class KitchenSinkController {
                           new ImageMessage(jpg.getUri(), jpg.getUri()));
                 });
     }
-
+    
+    /**
+     * 輸入語音時觸發程式
+     * @param event
+     * @throws IOException
+     */
     @EventMapping
     public void handleAudioMessageEvent(MessageEvent<AudioMessageContent> event) throws IOException {
         handleHeavyContent(
@@ -138,7 +164,12 @@ public class KitchenSinkController {
                     reply(event.getReplyToken(), new AudioMessage(mp4.getUri(), 100));
                 });
     }
-
+    
+    /**
+     * 輸入影片時觸發程式
+     * @param event
+     * @throws IOException
+     */
     @EventMapping
     public void handleVideoMessageEvent(MessageEvent<VideoMessageContent> event) throws IOException {
         // You need to install ffmpeg and ImageMagick.
@@ -155,45 +186,76 @@ public class KitchenSinkController {
                           new VideoMessage(mp4.getUri(), previewImg.uri));
                 });
     }
-
+    
+    /**
+     * 封鎖時觸發程式
+     * @param event
+     */
     @EventMapping
     public void handleUnfollowEvent(UnfollowEvent event) {
         log.info("unfollowed this bot: {}", event);
     }
-
+    
+    /**
+     * 解除封鎖時觸發程式
+     * @param event
+     */
     @EventMapping
     public void handleFollowEvent(FollowEvent event) {
         String replyToken = event.getReplyToken();
         this.replyText(replyToken, "Got followed event");
     }
-
+    
+    /**
+     * 加入時觸發程式
+     * @param event
+     */
     @EventMapping
     public void handleJoinEvent(JoinEvent event) {
         String replyToken = event.getReplyToken();
         this.replyText(replyToken, "Joined " + event.getSource());
     }
-
+    
+    /**
+     * 發生Postback觸發程式
+     * @param event
+     */
     @EventMapping
     public void handlePostbackEvent(PostbackEvent event) {
         String replyToken = event.getReplyToken();
         this.replyText(replyToken, "Got postback " + event.getPostbackContent().getData());
     }
-
+    
+    /**
+     * 發生藍芽事件觸發程式
+     * @param event
+     */
     @EventMapping
     public void handleBeaconEvent(BeaconEvent event) {
         String replyToken = event.getReplyToken();
         this.replyText(replyToken, "Got beacon message " + event.getBeacon().getHwid());
     }
-
+    
+    
     @EventMapping
     public void handleOtherEvent(Event event) {
         log.info("Received message(Ignored): {}", event);
     }
-
+    
+    /**
+     * 產生回覆動作
+     * @param replyToken
+     * @param message
+     */
     private void reply(@NonNull String replyToken, @NonNull Message message) {
         reply(replyToken, Collections.singletonList(message));
     }
-
+    
+    /**
+     * 產生回覆動作
+     * @param replyToken
+     * @param messages
+     */
     private void reply(@NonNull String replyToken, @NonNull List<Message> messages) {
         try {
             BotApiResponse apiResponse = lineMessagingClient
@@ -204,7 +266,12 @@ public class KitchenSinkController {
             throw new RuntimeException(e);
         }
     }
-
+    
+    /**
+     * 回覆純文字
+     * @param replyToken
+     * @param message
+     */
     private void replyText(@NonNull String replyToken, @NonNull String message) {
         if (replyToken.isEmpty()) {
             throw new IllegalArgumentException("replyToken must not be empty");
@@ -214,7 +281,13 @@ public class KitchenSinkController {
         }
         this.reply(replyToken, new TextMessage(message));
     }
-
+    
+    /**
+     * 處理資料量大的回覆程式(如圖片、語音、影片等)
+     * @param replyToken
+     * @param messageId
+     * @param messageConsumer
+     */
     private void handleHeavyContent(String replyToken, String messageId,
                                     Consumer<MessageContentResponse> messageConsumer) {
         final MessageContentResponse response;
@@ -227,18 +300,30 @@ public class KitchenSinkController {
         }
         messageConsumer.accept(response);
     }
-
+    
+    /**
+     * 回覆貼圖
+     * @param replyToken
+     * @param content
+     */
     private void handleSticker(String replyToken, StickerMessageContent content) {
         reply(replyToken, new StickerMessage(
                 content.getPackageId(), content.getStickerId())
         );
     }
-
+    
+    /**
+     * 純文字回覆邏輯處理
+     * @param replyToken
+     * @param event
+     * @param content
+     * @throws Exception
+     */
     private void handleTextContent(String replyToken, Event event, TextMessageContent content)
             throws Exception {
         String text = content.getText();
 
-        log.info("Got text message from {}: {}", replyToken, text);
+        log.info("Got text message from {}: {}", event.getSource().getUserId(), text);
         switch (text) {
             case "profile": {
                 String userId = event.getSource().getUserId();
@@ -364,6 +449,23 @@ public class KitchenSinkController {
                         )
                 ));
                 break;
+            case "weather":
+            		String url = "http://opendata.cwb.gov.tw/opendataapi";
+            		GetMethod get = new GetMethod(url);
+            		get.setQueryString(new NameValuePair[]{
+            				new NameValuePair("dataid","F-D0047-093"),
+            				new NameValuePair("authorizationkey","CWB-63E8A5B4-B95C-4DC8-9D0C-E87D11761FE4")
+            		});
+            		HttpClient httpclient = new HttpClient();
+            		httpclient.getHttpConnectionManager().getParams().setSoTimeout(30000);
+            		int result = httpclient.executeMethod(get);
+            		String returnWord = get.getResponseBodyAsString();
+            		get.releaseConnection();
+            		this.replyText(
+                            replyToken,
+                            result+""
+                    );
+            	break;
             default:
                 log.info("Returns echo message {}: {}", replyToken, text);
                 this.replyText(
@@ -373,7 +475,12 @@ public class KitchenSinkController {
                 break;
         }
     }
-
+    
+    /**
+     * 取得物件的uri
+     * @param path
+     * @return
+     */
     private static String createUri(String path) {
         return ServletUriComponentsBuilder.fromCurrentContextPath()
                                           .path(path).build()
