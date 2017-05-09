@@ -91,7 +91,7 @@ subprojects {
             dependency 'com.squareup.retrofit2:retrofit:2.2.0'
             dependency 'org.assertj:assertj-core:3.6.2'
             dependency 'org.projectlombok:lombok:1.16.12'
-			dependency 'commons-httpclient:commons-httpclient:3.1'
+			dependency 'org.apache.commons.httpclient:commons-httpclient:3.1'
         }
     }
 
