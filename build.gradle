@@ -108,6 +108,7 @@ subprojects {
         testCompile 'org.hibernate:hibernate-validator'
         testCompile 'org.springframework.boot:spring-boot-starter-test' // MockHttpServletRequest
         testCompile 'org.springframework.boot:spring-boot-starter-logging'
+		compileOnly 'commons-httpclient:commons-httpclient'
 		testCompile 'commons-httpclient:commons-httpclient'
     }
 
