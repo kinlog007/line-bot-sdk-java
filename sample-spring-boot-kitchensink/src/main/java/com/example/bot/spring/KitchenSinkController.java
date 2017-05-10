@@ -452,7 +452,10 @@ public class KitchenSinkController {
             case "weather":
             		String url = "";
             		HttpClient http = new HttpClient();
-            		GetMethod get = new GetMethod(url);  
+					this.replyText(
+                        replyToken,
+                        text
+					);
             		
             	break;
             default:
