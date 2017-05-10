@@ -451,7 +451,6 @@ public class KitchenSinkController {
                 break;
             case "weather":
             		String url = "";
-            		HttpClient http = new HttpClient();
 					this.replyText(
                         replyToken,
                         text
