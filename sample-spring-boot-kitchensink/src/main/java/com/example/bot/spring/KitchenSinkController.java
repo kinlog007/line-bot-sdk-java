@@ -450,21 +450,8 @@ public class KitchenSinkController {
                 ));
                 break;
             case "weather":
-            		String url = "http://opendata.cwb.gov.tw/opendataapi";
-            		GetMethod get = new GetMethod(url);
-            		get.setQueryString(new NameValuePair[]{
-            				new NameValuePair("dataid","F-D0047-093"),
-            				new NameValuePair("authorizationkey","CWB-63E8A5B4-B95C-4DC8-9D0C-E87D11761FE4")
-            		});
-            		HttpClient httpclient = new HttpClient();
-            		httpclient.getHttpConnectionManager().getParams().setSoTimeout(30000);
-            		int result = httpclient.executeMethod(get);
-            		String returnWord = get.getResponseBodyAsString();
-            		get.releaseConnection();
-            		this.replyText(
-                            replyToken,
-                            result+""
-                    );
+            		
+            		
             	break;
             default:
                 log.info("Returns echo message {}: {}", replyToken, text);
