@@ -451,6 +451,7 @@ public class KitchenSinkController {
                 break;
             case "weather":
             		String url = "";
+					
 					this.replyText(
                         replyToken,
                         text
